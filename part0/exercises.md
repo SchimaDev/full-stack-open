@@ -97,3 +97,81 @@ padding-left: 20px;
     - `auto` is a special value that divides available space evenly between the sides.
 - `<body>` is a **block** element by default. There are also **inline** elements such as `<img>`.
     - inline elements don't accept margin values, so to center an inline element, it must first be given block-level behaviour by setting `display: block;`.
+
+## 0.3 HTML forms
+- Forms can be used to enter and send data to a web server or on the client-side to immediately update the interface.
+- A web form is made up of one or more **form controls** (or **widgets**).
+    - Controls can be: single- or multiline text fields, dropdown boxes, buttons, checkboxes or radio buttons.
+    - Most are created using the `<input>` element.
+- Form controls can be used to enforce specific formats or values (**form validation**).
+- The bigger your form, the more you risk frustrating users. **Keep it simple.*
+- Example code:
+```html
+<form action="/my-handling-form-page" method="post">…</form>
+```
+- The `action` attribute defines the URL the form is sent to when submitted.
+- The `method` attribute defines the HTTP method to send the data with.
+- Further example code:
+```html
+<form action="/my-handling-form-page" method="post">
+  <p>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="user_name" />
+  </p>
+  <p>
+    <label for="mail">Email:</label>
+    <input type="email" id="mail" name="user_email" />
+  </p>
+  <p>
+    <label for="msg">Message:</label>
+    <textarea id="msg" name="user_message"></textarea>
+  </p>
+</form>
+```
+- The `type` attribute defines how the input element appears and behaves.
+- The `<button>` element is used to submit data or interact with the form. The value of its `type` attribute determines what the button does.
+    - `type="submit"` send the form's data to the web page defined by the `action` attribute on the `<form>` element
+    - `type="reset"` resets all of the form widgets to their default value.
+        - This is considered bad practice in UX
+    - `type="button"` does nothing on its own, but is meant to be used in conjunction with JavaScript.
+- Each form control can have a `name` attribute which allows the server to handle each piece of data by name.
+- A script at the URL specified in the `action` attribute receives the form data as a list of key/value pairs.
+
+## 0.4 New note diagram
+
+```mermaid
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    server-->>browser: 302 Found (URL redirect)
+    deactivate server
+
+    Note left of server: The server code creates a new note and adds it to the notes array
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server-->>browser: CSS file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server-->>browser: JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "new note", "date": "2026-10-29" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the callback function that renders the notes
+```
